@@ -2,6 +2,7 @@
 import { type ClassValue, clsx } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
+import { z } from "zod";
 // import { z } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
@@ -209,3 +210,20 @@ export const getTransactionStatus = (date: Date) => {
 //   email: z.string().email(),
 //   password: z.string().min(8),
 // })
+
+export const authFormSchema = (type: string) => z.object({
+  // Sign Up
+
+  firstName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  lastName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  phoneNumber: type === 'sign-in' ? z.string().optional() : z.string().min(8).max(12)
+    .regex(/^\+?\d{1,3}?[-.\s]?\(?\d{1,4}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/, { message: "Phone number must be valid" }),
+  idNumber: type === 'sign-in' ? z.string().optional() : z.string().length(8).regex(/^\d+$/, { message: "ID number must contain only digits" }),
+  address1: type === 'sign-in' ? z.string().optional() : z.string().max(50),
+  city: type === 'sign-in' ? z.string().optional() : z.string().min(4).max(12).regex(/^[A-Za-z\s]*$/, { message: "Only alphabetic characters are allowed" }),  postalCode: type === 'sign-in' ? z.string().optional() : z.string().min(3).max(6),
+  dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+  
+  // Both Sign up and sign in
+  email: z.string().email(),
+  password: z.string().min(8),
+})

@@ -216,11 +216,12 @@ export const authFormSchema = (type: string) => z.object({
 
   firstName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
   lastName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
-  phoneNumber: type === 'sign-in' ? z.string().optional() : z.string().min(8).max(12)
+  phone: type === 'sign-in' ? z.string().optional() : z.string().min(8).max(12)
     .regex(/^\+?\d{1,3}?[-.\s]?\(?\d{1,4}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/, { message: "Phone number must be valid" }),
-  idNumber: type === 'sign-in' ? z.string().optional() : z.string().length(8).regex(/^\d+$/, { message: "ID number must contain only digits" }),
+  ssn: type === 'sign-in' ? z.string().optional() : z.string().regex(/^\d{3}-\d{2}-\d{4}$/, 'Invalid SSN format'),
   address1: type === 'sign-in' ? z.string().optional() : z.string().max(50),
   city: type === 'sign-in' ? z.string().optional() : z.string().min(4).max(12).regex(/^[A-Za-z\s]*$/, { message: "Only alphabetic characters are allowed" }),  postalCode: type === 'sign-in' ? z.string().optional() : z.string().min(3).max(6),
+  state: type === 'sign-in' ? z.string().optional() : z.string().length(2, 'Invalid state abbreviation').regex(/^[A-Z]{2}$/, 'Must be a valid US state abbreviation'),
   dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().min(3),
   
   // Both Sign up and sign in

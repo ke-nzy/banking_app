@@ -23,6 +23,7 @@ import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getLoggedInUser, signIn, signUp } from '@/lib/actions/user.actions';
+import PlaidLink from './PlaidLink';
 
 const AuthForm = ({ type }: { type: string }) => {
 
@@ -51,11 +52,24 @@ const AuthForm = ({ type }: { type: string }) => {
 
         try {
             // Sign up with appwrite and create plaid link token
-            if (type === 'sign-up') {
-                const newUser = await signUp(data);
-                
-                setUser(newUser);
 
+            if (type === 'sign-up') {
+                const userData = {
+                    firstName: data.firstName!,
+                    lastName: data.lastName!,
+                    state: data.state!,
+                    ssn: data.ssn!,
+                    phone: data.phone!,
+                    address1: data.address1!,
+                    city: data.city!,
+                    postalCode: data.postalCode!,
+                    dateOfBirth: data.dateOfBirth!,
+                    email: data.email,
+                    password: data.password,
+                }
+                const newUser = await signUp(userData);
+
+                setUser(newUser);
 
             } if (type === 'sign-in') {
                 const response = await signIn({
@@ -106,7 +120,9 @@ const AuthForm = ({ type }: { type: string }) => {
             </header>
             {user ? (
                 <div className='flex flex-col gap-4'>
-                    {/* { Plaid Link } */}
+                    <PlaidLink
+                        user={user} variant="primary"
+                    />
                 </div>
             ) : (
                 <>
@@ -125,10 +141,10 @@ const AuthForm = ({ type }: { type: string }) => {
                                     </div>
                                     <div className='flex gap-4'>
                                         <CustomInput
-                                            control={form.control} name='phoneNumber' label='Phone Number' placeholder='0718000000'
+                                            control={form.control} name='phone' label='Phone Number' placeholder='0718000000'
                                         />
                                         <CustomInput
-                                            control={form.control} name='idNumber' label='National ID Number' placeholder='20500000'
+                                            control={form.control} name='ssn' label='SSN' placeholder='Example: 1234'
                                         />
                                     </div>
 
@@ -141,6 +157,10 @@ const AuthForm = ({ type }: { type: string }) => {
                                             control={form.control} name='postalCode' label='Postal Code' placeholder='01-00100'
                                         />
                                     </div>
+
+                                    <CustomInput
+                                        control={form.control} name='state' label='State' placeholder='Enter your state'
+                                    />
 
                                     <div className='flex gap-4'>
                                         <CustomInput
